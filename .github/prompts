@@ -30,7 +30,7 @@ thiết lập cho tôi một mô tả cho dự án phát triển phần mềm We
 - không tạo ra các tính năng không cần thiết không có trong mô tả dự án
 - không tạo ra các file test không cần thiết
 - docker dùng image là ubuntu 24.04 để xây dựng
-
+- tuyệt đối không triển khai ELk trên máy chủ này tránh quá tải không cần thiết
 
 # MÔ TẢ DỰ ÁN: HỆ THỐNG TƯỜNG LỬA ỨNG DỤNG WEB (WAF)
 
