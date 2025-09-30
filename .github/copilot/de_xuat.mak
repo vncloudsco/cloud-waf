@@ -1,0 +1,25 @@
+thiết lập cho tôi một mô tả cho dự án phát triển phần mềm Web Application Firewall với các yếu tố:
+
+- có giao diện portal quản trị và các tính năng quản trị chạy port riêng ví dụ 8088 chạy ngôn ngữ có thể là python hoặc nodejs tùy lựa chọn hợp lý của bạn
+- Tủy chọn dùng nginx hoặc apache để dùng chạy web không cài đặt sẵn, người dùng lựa chọn thì mới cài
+- Tùy chọn cài đặt Modsecurity phù hợp với nginx hoặc apache mà người dùng đã lựa chọn
+- Tùy chọn kích hoạt CRS rule của Modsecurity có chọn lọc cho các loại lỗ hổng SQL Injection, XSS, RCE, LFI, SESSION-FIXATION, PHP,PROTOCOL-ATTACK,DATA-LEAKAGES, ssrf, php-variables, web shell
+- Có lưu trữ với postgresql để lưu các tùy chọn liên quan tới domain (các tùy chọn thêm sửa xóa domain)
+- chỉ cho phép cấu hình vhost với tùy chọn là Reverse Proxy tới backend chỗ khác với  backend có thể https hoặc http
+- Có quản trị tài khoản phân quyền theo domain, theo tổ chức/phòng ban, admin toàn quyền
+- Có tùy chọn cấu hình SSL tự động và thủ công với SSL đã có cho vhost và portal qua giao diện quản trị
+- Có tùy chọn xem log của web server (nginx hoặc apache) và log thao tác trên hệ thống của toàn bộ các loại tài khoản trên hệ thống
+- Có hỗ trợ ship log qua ELK
+- Có hỗ trợ gửi cảnh báo qua email, telegram chủ yếu là telegram
+- Có hỗ trợ backup và restore cấu hình hệ thống
+- Có tính năng whitelist & blacklist IP, GeoIP, User-Agent, URL, Method, Header, Cookie, Body, Size Request, Size Response, Referrer, Protocol
+- Có tính năng rate limit, connection limit, bandwidth limit
+- Có tính năng cache tĩnh (static file) với các tùy chọn cấu hình nâng cao
+- Có tính năng load balancing với các thuật toán round-robin, least connections, ip-hash
+- Có tính năng health check backend server
+- Có tính năng giám sát hiệu suất hệ thống và cảnh báo khi có sự cố về hiệu suất hoặc quá tải
+- Anti-Bot Challenge cho phép người dùng thêm các biện pháp chống bot như CAPTCHA, JavaScript challenge, block hoặc các phương pháp xác thực khác để ngăn chặn truy cập từ các bot độc hại với các IP, User-Agent, GeoIP, Header, Cookie, Body, Referrer, Protocol đã được whitelist & blacklist
+- cho phép giới hạn Ip đăng nhập hệ thống quản trị
+- link đăng nhập portal quản trị có kèo theo path bí mật để tăng cường bảo mật
+- Tương thích và được thiết kế hoàn toàn với docker và docker-compose để dễ dàng triển khai và quản lý
+- có Slave Nodes để mở rộng quy mô và tăng cường hiệu suất
