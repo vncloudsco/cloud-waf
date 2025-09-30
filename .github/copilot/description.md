@@ -1,53 +1,69 @@
-Mô Tả Dự Án: Hệ Thống Tường Lửa Ứng Dụng Web (WAF) Tích Hợp
-1. Mục Tiêu Dự Án
-Phát triển một giải pháp Web Application Firewall (WAF) mạnh mẽ, dễ dàng triển khai (sử dụng Docker), và có khả năng mở rộng, cung cấp khả năng bảo vệ toàn diện cho các ứng dụng web bằng cách tích hợp sâu với ModSecurity và Nginx/Apache cùng với một Portal Quản trị tập trung.
+# MÔ TẢ DỰ ÁN: HỆ THỐNG TƯỜNG LỬA ỨNG DỤNG WEB (WAF)
 
-2. Kiến Trúc Hệ Thống Đề Xuất
-| Thành phần | Công nghệ Đề xuất | Mục đích |
-| WAF Engine | Nginx (Mặc định) hoặc Apache | Xử lý traffic, Reverse Proxy, Caching, Load Balancing, ModSecurity. |
-| WAF Core Logic | ModSecurity 3.x (Connector cho Nginx/Apache) | Thực thi các quy tắc bảo mật (CRS). |
-| Portal Quản trị | Node.js (dùng framework Express/NestJS) | Giao diện người dùng (UI) quản lý cấu hình, người dùng, log và giám sát. |
-| Cơ sở dữ liệu | PostgreSQL | Lưu trữ cấu hình hệ thống, dữ liệu vhost, tùy chọn bảo mật, và dữ liệu người dùng. |
-| Triển khai | Docker và Docker Compose | Đảm bảo tính nhất quán và dễ dàng mở rộng (Slave Nodes). |
+## 1. Mục Tiêu Dự Án
+Dự án xây dựng hệ thống Web Application Firewall (WAF) nhằm bảo vệ toàn diện cho các ứng dụng web trước các mối đe dọa hiện đại. Hệ thống hướng tới sự dễ dàng triển khai, quản lý, mở rộng, đồng thời tích hợp sâu các công nghệ bảo mật tiên tiến như ModSecurity, Nginx/Apache và cung cấp giao diện quản trị tập trung, thân thiện.
 
-3. Các Tính Năng Chi Tiết của Hệ Thống
-A. Cấu Trúc Quản Trị và Giao Diện Portal
-Portal Quản trị (Portal Administration):
+## 2. Kiến Trúc Hệ Thống
+| Thành phần         | Công nghệ Đề xuất                | Chức năng chính |
+|--------------------|----------------------------------|-----------------|
+| WAF Engine         | Nginx hoặc Apache                | Xử lý traffic, Reverse Proxy, Caching, Load Balancing, ModSecurity |
+| WAF Core Logic     | ModSecurity 3.x                  | Thực thi các quy tắc bảo mật (CRS) |
+| Portal Quản trị    | Node.js/Python (Express/NestJS)  | Giao diện quản lý cấu hình, người dùng, log, giám sát |
+| Cơ sở dữ liệu      | PostgreSQL                       | Lưu trữ cấu hình, domain, bảo mật, người dùng |
+| Triển khai         | Docker & Docker Compose          | Dễ dàng triển khai, mở rộng, quản lý Slave Nodes |
 
-Nền tảng: Xây dựng bằng Node.js/Express chạy trên một cổng riêng biệt (ví dụ: 8088).
+## 3. Tính Năng Nổi Bật
 
-Giao diện: Cung cấp giao diện trực quan để quản lý toàn bộ hệ thống.
+### 3.1. Giao Diện Portal Quản Trị
+- Chạy trên port riêng (ví dụ: 8088), bảo mật bằng path bí mật khi đăng nhập.
+- Quản lý tài khoản, phân quyền theo domain, tổ chức/phòng ban, admin toàn quyền.
+- Giới hạn IP đăng nhập hệ thống quản trị.
 
-Bảo mật Truy cập: Link đăng nhập Portal yêu cầu kèm theo một Path bí mật (ví dụ: /login/a9b3c5d7) để tăng cường bảo mật truy cập.
+### 3.2. Quản Lý Domain & Vhost
+- Lưu trữ domain, cấu hình backend, trạng thái kích hoạt bằng PostgreSQL.
+- Thêm, sửa, xóa domain dễ dàng qua giao diện.
+- Chỉ cho phép cấu hình vhost dạng Reverse Proxy tới backend (HTTP/HTTPS).
 
-Quản lý Tài khoản và Phân quyền:
+### 3.3. Web Server & ModSecurity
+- Tùy chọn cài đặt Nginx hoặc Apache (không cài sẵn, người dùng lựa chọn khi cài đặt).
+- Tùy chọn cài đặt ModSecurity phù hợp với web server đã chọn.
+- Kích hoạt CRS rule có chọn lọc cho các lỗ hổng: SQL Injection, XSS, RCE, LFI, SESSION-FIXATION, PHP, PROTOCOL-ATTACK, DATA-LEAKAGES, SSRF, PHP-Variables, Web Shell.
 
-Admin Toàn quyền: Có quyền truy cập và quản lý mọi khía cạnh của hệ thống và tất cả các domain.
+### 3.4. Quản Lý Bảo Mật & Truy Cập
+- Quản lý whitelist/blacklist theo IP, GeoIP, User-Agent, URL, Method, Header, Cookie, Body, Size Request, Size Response, Referrer, Protocol.
+- Anti-Bot Challenge: CAPTCHA, JavaScript challenge, block, xác thực khác cho các đối tượng đã được whitelist/blacklist.
+- Rate limit, connection limit, bandwidth limit.
 
-Quản lý Tổ chức/Phòng ban (Organization/Department): Phân quyền người dùng theo nhóm, giới hạn phạm vi quản lý.
+### 3.5. Quản Lý SSL & Caching
+- Cấu hình SSL tự động (Let's Encrypt) hoặc thủ công cho vhost và portal.
+- Cache tĩnh (static file) với các tùy chọn nâng cao: TTL, cache bypass theo cookie/header.
 
-Phân quyền theo Domain: Cho phép người dùng hoặc nhóm chỉ quản lý các vhost/domain cụ thể được chỉ định.
+### 3.6. Load Balancing & Health Check
+- Load balancing với các thuật toán: round-robin, least connections, ip-hash.
+- Health check backend server, tự động loại bỏ server lỗi khỏi pool.
 
-Hạn chế Đăng nhập: Cho phép giới hạn số lượng IP hoặc dải IP được phép truy cập vào Portal Quản trị (cổng 8088).
+### 3.7. Log, Giám Sát & Cảnh Báo
+- Xem log web server (Nginx/Apache) và log thao tác hệ thống của các tài khoản.
+- Ship log qua ELK Stack hoặc các hệ thống SIEM khác.
+- Giám sát hiệu suất hệ thống (CPU, RAM, Disk I/O, kết nối, tốc độ phản hồi).
+- Cảnh báo hiệu suất, sự cố bảo mật qua Telegram (ưu tiên) và Email.
 
-B. Cấu hình Vhost và Reverse Proxy
-Hỗ trợ Web Server Tùy chọn:
+### 3.8. Backup & Restore
+- Backup toàn bộ cấu hình hệ thống và cơ sở dữ liệu.
+- Khôi phục cấu hình từ các bản backup.
 
-Hệ thống cho phép người dùng tùy chọn và cài đặt Nginx hoặc Apache làm Web Server/WAF Engine.
+### 3.9. Triển Khai & Mở Rộng
+- Thiết kế hoàn toàn tương thích với Docker và Docker Compose.
+- Hỗ trợ Slave Nodes để mở rộng quy mô, tăng hiệu suất, đồng bộ cấu hình tự động từ Master Node.
 
-Cấu hình WAF Engine được triển khai tự động dựa trên lựa chọn này.
+## 4. Giá Trị Mang Lại
+- Bảo vệ ứng dụng web trước các mối nguy hại hiện đại.
+- Dễ dàng triển khai, quản lý, mở rộng cho doanh nghiệp/tổ chức.
+- Giao diện quản trị tập trung, thân thiện, bảo mật cao.
+- Tích hợp sâu các công nghệ bảo mật tiên tiến, linh hoạt tùy biến theo nhu cầu thực tế.
 
-Cấu hình Reverse Proxy Bắt buộc:
-
-Chỉ cho phép cấu hình vhost (Virtual Host) với tùy chọn là Reverse Proxy tới một Backend Server khác.
-
-Backend có thể là giao thức HTTP hoặc HTTPS (đảm bảo hỗ trợ SNI nếu cần).
-
-Portal quản trị tự động tạo và phân phối các file cấu hình vhost phù hợp cho Nginx/Apache.
-
-Quản lý Domain:
-
-Sử dụng PostgreSQL để lưu trữ các tùy chọn liên quan tới domain (thêm, sửa, xóa, trạng thái kích hoạt, cấu hình backend, v.v.).
+## 5. Kết Luận
+Dự án WAF là giải pháp bảo mật toàn diện, hiện đại, dễ triển khai và mở rộng, phù hợp cho mọi tổ chức/doanh nghiệp có nhu cầu bảo vệ ứng dụng web trước các mối nguy hại ngày càng tinh vi.
 
 C. Bảo mật WAF (ModSecurity và Quy tắc)
 Tùy chọn Cài đặt ModSecurity: Cho phép người dùng tùy chọn cài đặt ModSecurity phù hợp với Web Server đã chọn (ví dụ: ngx_http_modsecurity_module cho Nginx hoặc mod_security2 cho Apache).
